@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row" id="searchres">
+	<div class="col-md-3">
+	</div>
+	<div class="col-md-9">
+    {% if searchresult == None %}
+        <h1> No search results </h1>
+    {% else %}
+		{% for result in searchresult %}
+		<div class="row featurette">
+            {% if searchresult.index % 2 != 0 %}
+			<div class="col-md-6">
+			</div>
+            {% else %}
+			<div class="col-md-6">
+			</div>
+            {% endif %}
+		</div>
+        {% endfor %}
+    {% endif %}
+	</div>
+</div>
+{% endblock %}

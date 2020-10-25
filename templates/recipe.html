@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1> add recipe </h1>
+    </div>
+	<div class="col-md-3">
+        <h4>Ingredients</h4>
+		<ul>
+			<li>Chicken
+			</li>
+			<li>Beef
+			</li>
+			<li>Pork
+			</li>
+			<li>Fish
+			</li>
+			<li>Potatoes
+			</li>
+			<li>Rice
+			</li>
+			<li>Pasta
+			</li>
+            <li>Vegetarian
+            </li>
+            <li>Vegan
+            </li>
+		</ul>
+	</div>
+	<div class="col-md-9">
+		{% if homeresults == None %}
+		<h1> No recipes </h1>
+		{% else %}
+		<div class="row featurette">
+			{% for result in homeresults %}
+				<div class="col-md-4">
+                <h3>title</h3>
+                <p>description</p>
+                <!-- <img /> -->
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
