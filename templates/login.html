@@ -6,6 +6,7 @@
 			<h1>Sign in now</h1>
 		</div>
 		<form action="/login" method="post" id="contactForm" enctype="multipart/form-data">
+        {{ form.csrf_token }}
 			<div class="control-group">
 				<div class="form-group floating-label-form-group controls">
 					<label>Email *</label>

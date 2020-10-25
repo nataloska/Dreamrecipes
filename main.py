@@ -1,7 +1,5 @@
 import pymongo
 import os
-import json
-import werkzeug
 import gridfs
 
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
@@ -12,6 +10,7 @@ from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import Email, Length, InputRequired, DataRequired
 from passlib.hash import sha256_crypt
 from datetime import datetime
+from werkzeug.datastructures import CombinedMultiDict, MultiDict
 
 app = Flask(__name__)
 
@@ -24,7 +23,9 @@ RECIPE_COLLECTION = "recipe"
 db = pymongo.MongoClient(MONGODB_URI)
 users = db[DBS_NAME][USER_COLLECTION]
 recipes = db[DBS_NAME][RECIPE_COLLECTION]
-recipesearch = recipes.create_index([('description',TEXT)],default_language ="english")
+recphoto = db[DBS_NAME]
+fs = gridfs.GridFS(recphoto)
+recipesearch = recipes.create_index([('description',TEXT)],default_language="english")
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
@@ -40,13 +41,13 @@ class SearchForm(FlaskForm):
     search = StringField('search', validators=[InputRequired(), Length(max=30)])
 
 class RecipeForm(FlaskForm):
-    name = StringField('name', validators=[InputRequired(), Length(max=30)])
+    recipename = StringField('recipename', validators=[InputRequired(), Length(max=30)])
     photo = FileField('photo')
-    ingredients = TextAreaField('ingredients')
-    description = TextAreaField('description')
-    instructions = TextAreaField('instructions')
-    cTime = StringField('cooktime')
-    pTime = StringField('preptime')
+    ingredients = StringField('ingredients')
+    description = StringField('description')
+    instructions = StringField('instructions')
+    cTime = StringField('cTime')
+    pTime = StringField('pTime')
 
 
 # Flask
@@ -56,7 +57,7 @@ def index():
 
 @app.route("/search", methods=["POST"])
 def search():
-    form = SearchForm()
+    form = SearchForm(request.form)
     query = form.data['search']
     if query:
         searchresult = recipesearch.find({"$text": {"$search": query}}).limit(10)
@@ -67,44 +68,29 @@ def search():
 @app.route("/recipe")
 def recipe():
     homeresults = recipes.find().limit(9).sort('date',pymongo.DESCENDING)
-    for result in homeresults:
-        result['photo'] = downloadImage(result['Photoid'])
-                  
     return render_template("recipe.html", homeresults=homeresults)
-
-@app.route("/newrecipe", methods=['GET'])
-def startnewrecipe():
-    return render_template("newrecipe.html")
 
 @app.route("/newrecipe", methods=['POST'])
 def newrecipe(): 
-    form = RecipeForm()
-    currentuser = users.find_one({'email' : session['email']})
-    if currentuser:
-        recipes.insert_one({'username' : currentuser['email'], 'name' : form.name.data,
-                            'ingredients' : form.ingredients.data, 'description' : form.description.data,
-                            'instructions' : form.instructions.data, 'cooktime' : form.cTime.data,
-                            'preptime' : form.pTime.data, 'date' : datetime.now(), 'Photoid' : uploadImage(form.photo.data)})
-        return redirect(url_for('index'))
-          
+    form = RecipeForm(CombinedMultiDict([request.files, request.form]))
+    print('validatefail')
+    if form.validate():
+        print('validatesuccess')
+        currentuser = users.find_one({'email' : session['email']})
+        if currentuser:
+            recipes.insert_one({'username' : session['email'], 'recipename' : form.recipename.data,
+                                'ingredients' : form.ingredients.data, 'description' : form.description.data,
+                                'instructions' : form.instructions.data, 'cooktime' : form.cTime.data,
+                                'preptime' : form.pTime.data, 'date' : datetime.now()})
+            recipe_id = recipes.find_one({'username' : session['email'], 'recipename' : form.recipename.data})['_id']
+            try: 
+                with open(form.phone.data, 'rb') as blob:
+                    fs.put(blob, recipe_id = recipe_id)
+                    return redirect(url_for('index'))
+            except EnvironmentError:
+                print('No photo to upload')
+            
     return render_template("newrecipe.html", form=form)
-
-def uploadImage(img):
-    fs = gridfs.GridFS(recphoto)
-    if img == None:
-        return
-    
-    with open(img, 'rb') as blob:
-        fileID = fs.put(img)
-    return fileID
-
-def downloadImage(id):
-    fs = gridfs.GridFS(recphoto)
-    if id == None:
-        return
-
-    image = fs.get(id)
-    return image
 
 @app.route("/settings")
 def settings():
@@ -112,7 +98,7 @@ def settings():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = LoginForm(request.form)
     if form.validate():
         user_exist = users.find_one({'email': form.email.data})
         if user_exist:
@@ -125,7 +111,7 @@ def login():
   
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegForm()
+    form = RegForm(request.form)
     if form.validate():
         existing_user = users.find_one({'email' : form.email.data})
         if existing_user is None:

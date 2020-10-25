@@ -6,10 +6,11 @@
 			<h1>Add a new recipe!</h1>
 		</div>
 		<form action="/newrecipe" method="post" id="recipeForm" enctype="multipart/form-data">
+        {{ form.csrf_token }}
 			<div class="row control-group">
 				<div class="form-group floating-label-form-group controls col-md-6">
 					<label>Name *</label>
-					{{ form.name(class="form-control", placeholder="Name", id="name") }}
+					{{ form.recipename(class="form-control", placeholder="Name", id="recipename") }}
 					<p class="help-block text-danger"></p>
 				</div>
                 	<div class="form-group floating-label-form-group controls col-md-6">
