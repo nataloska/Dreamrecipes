@@ -1,14 +1,28 @@
 {% extends 'base.html' %} {% block content %}
-<div class="row">
 {% if session['logged_in'] == True %}
-    <div class="col-12 newrecipe">
-            <form action="/newrecipe" method="post" name="newrecipe">
-				<input type="submit" class="recipe-btn">
-            </form>
-    </div>
+<header class="masthead_1" style="
+        background-image: url('https://previews.123rf.com/images/sonyakamoz/sonyakamoz1803/sonyakamoz180300058/97759996-spring-healthy-vegan-food-cooking-ingredients-flat-lay-of-vegetables-fruit-seeds-sprouts-flowers-gre.jpg');
+      ">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				<div class="site-heading">
+					<a method="post" name="newrecipe" action="/newrecipe">
+						<h1>Dreamrecipes</h1>
+					</a>
+					<!-- <form action="/newrecipe" method="post" name="newrecipe">
+							<input type="submit" class="recipe-btn">
+                        </form> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
 {% endif %}
+<div class="row">
 	<div class="col-md-3">
-        <h4>Ingredients</h4>
+		<h4>Ingredients</h4>
 		<ul>
 			<li>Chicken
 			</li>
@@ -24,10 +38,10 @@
 			</li>
 			<li>Pasta
 			</li>
-            <li>Vegetarian
-            </li>
-            <li>Vegan
-            </li>
+			<li>Vegetarian
+			</li>
+			<li>Vegan
+			</li>
 		</ul>
 	</div>
 	<div class="col-md-9">
@@ -36,15 +50,14 @@
 		{% else %}
 		<div class="row featurette">
 			{% for result in homeresults %}
-				<div class="col-md-4">
-                <h3>title</h3>
-                <p>description</p>
-                <!-- <img /> -->
-				</div>
+			<div class="col-md-4">
+				<h3>title</h3>
+				<p>description</p>
+				<!-- <img /> -->
 			</div>
-			{% endfor %}
 		</div>
-		{% endif %}
+		{% endfor %}
 	</div>
+	{% endif %}
 </div>
 {% endblock %}

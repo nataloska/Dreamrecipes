@@ -101,3 +101,24 @@
     background-color: #169c7b;
     color: white;
 }
+.newrecipe{
+    text-align: center;
+}
+header .masthead_1{
+    margin-bottom: 50px;
+    background: no-repeat center center;
+    background-color: #868e96;
+    background-attachment: scroll;
+    position: relative;
+    /* background-size: cover; */
+    height: 30vh;
+}
+header .masthead_1 overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #212529;
+    opacity: .5;
+}
