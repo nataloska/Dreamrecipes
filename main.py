@@ -58,7 +58,7 @@ class RecipeForm(FlaskForm):
 @app.route("/")
 def index():
     recentrecipes = []
-    recententries = db[DBS_NAME][RECIPE_COLLECTION].find().sort('date' , pymongo.DESCENDING).limit(5)
+    recententries = recipes.find().sort('date' , pymongo.DESCENDING).limit(5)
     for entry in recententries:
         customername = users.find_one({'email' : entry['username']})['name']
         entry['customername'] = customername
@@ -80,7 +80,16 @@ def search():
 
 @app.route("/recipe")
 def recipe():
-    homeresults = recipes.find({}).sort('date',pymongo.DESCENDING).limit(9)
+    homeresults = []
+    homequery = recipes.find().sort('date' , pymongo.DESCENDING).limit(9)
+    for result in homequery:
+        
+        customername = users.find_one({'email' : result['username']})['name']
+        result['customername'] = customername
+        homeresults.append(result)
+        newdate = datetime.date(result['date'])
+        result['date'] = newdate
+        break   
     return render_template("recipe.html", homeresults=homeresults)
 
 @app.route("/newrecipe", methods=['POST', 'GET'])
@@ -99,21 +108,7 @@ def newrecipe():
             recipes.insert_one({'username' : session['email'], 'recipename' : form.recipename.data,
                                 'ingredients' : form.ingredients.data, 'description' : form.description.data,
                                 'instructions' : form.instructions.data, 'cooktime' : form.cTime.data,
-                                'preptime' : form.pTime.data, 'date' : datetime.now()})
-            recipe_id = recipes.find_one({'username' : session['email'], 'recipename' : form.recipename.data})['_id']
-            print(recipe_id)
-            try:
-                with open('static/recipe/' + filename, "rb") as image:
-                    image_string = base64.b64encode(image.read())
-                    fs.put(image_string, filename = filename, recipe_id = recipe_id)
-                if os.path.isfile('static/recipe/' + filename):
-                    os.remove('static/recipe/' + filename)
-                else: 
-                    print("Error: %s file not found" % myfile)
-                return  redirect(url_for('index'))
-            except Exception as e:
-                logging.error(traceback.format_exc())
-                return render_template("newrecipe.html", form=form)       
+                                'preptime' : form.pTime.data, 'date' : datetime.now(), 'photo_path' : 'static/recipe/' + filename})
     return render_template("newrecipe.html", form=form)
 
 @app.route("/settings")

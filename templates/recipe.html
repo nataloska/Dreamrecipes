@@ -7,13 +7,11 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 col-md-10 mx-auto">
-				<div class="site-heading">
-					<a method="post" name="newrecipe" action="/newrecipe">
-						<h1>Dreamrecipes</h1>
-					</a>
-					<!-- <form action="/newrecipe" method="post" name="newrecipe">
-							<input type="submit" class="recipe-btn">
-                        </form> -->
+				<div id="newrecipe" class="site-heading">
+                <form action="/newrecipe" method="POST" id="newrecipeform" enctype="multipart/form-data">
+                    <h3>Click here to create a new recipe</h3>
+                    <input type="submit" id="recipeinput" value="New Recipe">
+                </form>
 				</div>
 			</div>
 		</div>
@@ -51,9 +49,9 @@
 		<div class="row featurette">
 			{% for result in homeresults %}
 			<div class="col-md-4">
-				<h3>title</h3>
-				<p>description</p>
-				<!-- <img /> -->
+				<a href="#"><h3>{{  result.recipename  }}</h3></a>
+				<p>{{  result.description  }}</p>
+				<img src="">
 			</div>
 		</div>
 		{% endfor %}

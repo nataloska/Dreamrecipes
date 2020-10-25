@@ -30,6 +30,14 @@
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: black;
 }
+#photo{
+    padding:5px 15px; 
+    background:#ccc; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+}
 
 .clearfix a{
     background-color: #4a4a4a;
@@ -87,24 +95,24 @@
     font-style: italic;
     font-weight: thin;
 }
-.btn {
-    display: inline-block;
+.form_footer .btn {
     padding: 10px 20px;
-    background-color: #1bba93;
+    background-color: #4a4a4a;
     font-size: 17px;
     border: none;
     border-radius: 5px;
-    color: #bcf5e7;
+    color: #7d7d7d;
     cursor: pointer;
+    float: right;
 }
 .btn:hover {
-    background-color: #169c7b;
+    background-color: #0f0f0f;
     color: white;
 }
 .newrecipe{
     text-align: center;
 }
-header .masthead_1{
+header.masthead_1{
     margin-bottom: 50px;
     background: no-repeat center center;
     background-color: #868e96;
@@ -113,7 +121,7 @@ header .masthead_1{
     /* background-size: cover; */
     height: 30vh;
 }
-header .masthead_1 overlay{
+header.masthead_1 .overlay{
     position: absolute;
     top: 0;
     left: 0;
@@ -121,4 +129,19 @@ header .masthead_1 overlay{
     width: 100%;
     background-color: #212529;
     opacity: .5;
+}
+header.masthead_1 .site-heading {
+    text-align: center;
+}
+.site-heading #newrecipe{
+    height:150px;
+    z-index: 10;
+}
+header.masthead_1 .site-heading .subheading {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.1;
+    display: block;
+    margin: 10px 0 0;
+    font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
