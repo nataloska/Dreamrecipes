@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row">
+	<div class="col-md-2"></div>
+	<div class="col-md-8 recipeForm">
+		<div class="form-header">
+			<h1>Add a new recipe!</h1>
+		</div>
+		<form action="/newrecipe" method="post" id="recipeForm" enctype="multipart/form-data">
+			<div class="row control-group">
+				<div class="form-group floating-label-form-group controls col-md-6">
+					<label>Name *</label>
+					{{ form.name(class="form-control", placeholder="Name", id="name") }}
+					<p class="help-block text-danger"></p>
+				</div>
+                	<div class="form-group floating-label-form-group controls col-md-6">
+					<label>Photo</label>
+					{{ form.photo(class="form-control", accept="image/*", placeholder="Photo", id="photo") }}
+					<p class="help-block text-danger"></p>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<div class="form-group floating-label-form-group controls">
+					<label>Ingredients *</label>
+					{{ form.ingredients(class="form-control", placeholder="ingredients", id="ingredients") }}
+					<p class="help-block text-danger"></p>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="form-group floating-label-form-group controls">
+					<label>description *</label>
+					{{ form.description(class="form-control", placeholder="description", id="description") }}
+					<p class="help-block text-danger"></p>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<div class="form-group floating-label-form-group controls">
+					<label>instructions</label>
+					{{ form.instructions(class="form-control", placeholder="instructions", id="instructions") }}
+					<p class="help-block text-danger"></p>
+				</div>
+			</div>
+			<div class="row control-group">
+				<div class="form-group floating-label-form-group controls col-md-6">
+					<label>Cook time</label>
+					{{ form.cTime(class="form-control", placeholder="Cook time", id="Cook time") }}
+					<p class="help-block text-danger"></p>
+				</div>
+                	<div class="form-group floating-label-form-group controls col-md-6">
+					<label>Prep time</label>
+					{{ form.pTime(class="form-control", placeholder="Prep time", id="Prep time") }}
+					<p class="help-block text-danger"></p>
+				</div>
+			</div>
+			<div class="form-footer">
+				<span>* required</span>
+				<input type="submit" class="btn" value="Submit">
+			</div>
+		</form>		
+	</div>
+    <div class="col-md-2"></div>
+</div>
+{% endblock %}

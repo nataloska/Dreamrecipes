@@ -37,7 +37,7 @@
         </button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto">
-                    {% if session['logged_in'] %}
+                    {% if session['logged_in'] == True %}
                     <li class="nav-item">
 						<a class="nav-link" href="{{ url_for('index') }}">Home</a>
 					</li>

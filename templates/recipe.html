@@ -1,8 +1,12 @@
 {% extends 'base.html' %} {% block content %}
 <div class="row">
-    <div class="col-12">
-        <h1> add recipe </h1>
+{% if session['logged_in'] == True %}
+    <div class="col-12 newrecipe">
+            <form action="/newrecipe" method="post" name="newrecipe">
+				<input type="submit" class="recipe-btn">
+            </form>
     </div>
+{% endif %}
 	<div class="col-md-3">
         <h4>Ingredients</h4>
 		<ul>
