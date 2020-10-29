@@ -4,6 +4,7 @@ import gridfs
 import logging
 import traceback
 import base64
+import cgi
 
 from pprint import pprint
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
@@ -30,6 +31,7 @@ users = db[DBS_NAME][USER_COLLECTION]
 recipes = db[DBS_NAME][RECIPE_COLLECTION]
 recipesearch = recipes.create_index([('description',TEXT)],default_language="english")
 fs = gridfs.GridFS(db[DBS_NAME])
+
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
@@ -70,20 +72,20 @@ def index():
 
 @app.route("/search", methods=["POST"])
 def search():
-    form = SearchForm(request.form)
-    query = form.data['search']
-    if query:
+    form = cgi.FieldStorage().getvalue('search')
+    print(form)
+    if form:
+        print('test result')
         searchresult = recipesearch.find({"$text": {"$search": query}}).limit(10)
-        return render_template("search.html", form=form, query=query, searchresult=searchresult)
+        return render_template("search.html", form=form, searchresult=searchresult)
     
-    return render_template("search.html", form=form, query=query, searchresult=None)
+    return render_template("search.html", form=form, searchresult=None)
 
 @app.route("/recipe")
 def recipe():
     homeresults = []
     homequery = recipes.find().sort('date' , pymongo.DESCENDING).limit(9)
-    for result in homequery:
-        
+    for result in homequery:       
         customername = users.find_one({'email' : result['username']})['name']
         result['customername'] = customername
         homeresults.append(result)
@@ -109,6 +111,8 @@ def newrecipe():
                                 'ingredients' : form.ingredients.data, 'description' : form.description.data,
                                 'instructions' : form.instructions.data, 'cooktime' : form.cTime.data,
                                 'preptime' : form.pTime.data, 'date' : datetime.now(), 'photo_path' : 'static/recipe/' + filename})
+            return redirect(url_for('index'))
+        return redirect(url_for('index'))
     return render_template("newrecipe.html", form=form)
 
 @app.route("/settings")

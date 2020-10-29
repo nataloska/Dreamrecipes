@@ -3,21 +3,31 @@
 	<div class="col-md-3">
 	</div>
 	<div class="col-md-9">
-    {% if searchresult == None %}
-        <h1> No search results </h1>
-    {% else %}
+		{% if searchresult == None %}
+		<h1> No search results </h1>
+		{% else %}
 		{% for result in searchresult %}
 		<div class="row featurette">
-            {% if searchresult.index % 2 != 0 %}
+			{% if searchresult.index % 2 != 0 %}
 			<div class="col-md-6">
+				<a href="#">
+					<h3>{{  result.recipename  }}</h3>
+				</a>
+				<p>{{  result.description  }}</p>
+				<img src="{{  result.photo_path  }}">
 			</div>
-            {% else %}
-			<div class="col-md-6">
+				{% else %}
+				<div class="col-md-6">
+					<a href="#">
+						<h3>{{  result.recipename  }}</h3>
+					</a>
+					<p>{{  result.description  }}</p>
+					<img src="{{  result.photo_path  }}">
 			</div>
-            {% endif %}
+					{% endif %}
+				</div>
+				{% endfor %}
+				{% endif %}
+			</div>
 		</div>
-        {% endfor %}
-    {% endif %}
-	</div>
-</div>
-{% endblock %}
+		{% endblock %}

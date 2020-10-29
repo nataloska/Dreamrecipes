@@ -48,13 +48,14 @@
 		{% else %}
 		<div class="row featurette">
 			{% for result in homeresults %}
-			<div class="col-md-4">
+			<div class="col-md-4 recipe_ex">
+				<img src="{{  result.photo_path  }}">
 				<a href="#"><h3>{{  result.recipename  }}</h3></a>
 				<p>{{  result.description  }}</p>
-				<img src="">
 			</div>
+            {% endfor %}
 		</div>
-		{% endfor %}
+		
 	</div>
 	{% endif %}
 </div>

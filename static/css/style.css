@@ -145,3 +145,10 @@ header.masthead_1 .site-heading .subheading {
     margin: 10px 0 0;
     font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
+.recipe_ex{
+    width: 20vw;
+    position: absolute;
+}
+.recipe_ex img{
+    width: 100%;
+}
