@@ -8,9 +8,10 @@
 		<div class="row">
 			<div class="col-lg-8 col-md-10 mx-auto">
 				<div id="newrecipe" class="site-heading">
-                <form action="/newrecipe" method="POST" id="newrecipeform" enctype="multipart/form-data">
-                    <h3>Click here to create a new recipe</h3>
-                    <input type="submit" id="recipeinput" value="New Recipe">
+					<form action="{{ url_for('newrecipe') }}" method="POST" id="newrecipeform"
+						enctype="multipart/form-data">
+						<h3>Click here to create a new recipe</h3>
+						<input type="submit" id="recipeinput" value="New Recipe">
                 </form>
 				</div>
 			</div>
@@ -19,27 +20,29 @@
 </header>
 {% endif %}
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-3 contactForm">
 		<h4>Ingredients</h4>
-		<ul>
-			<li>Chicken
+		<ul class="list-group ingredientbar">
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/chicken">Chicken</a>
 			</li>
-			<li>Beef
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/beef">Beef</a>
 			</li>
-			<li>Pork
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/pork">Pork</a>
 			</li>
-			<li>Fish
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/fish">Fish</a>
 			</li>
-			<li>Potatoes
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/potatoes">Potatoes</a>
 			</li>
-			<li>Rice
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/rice">Rice</a>
 			</li>
-			<li>Pasta
-			</li>
-			<li>Vegetarian
-			</li>
-			<li>Vegan
-			</li>
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/pasta">Pasta</a>
 		</ul>
 	</div>
 	<div class="col-md-9">
@@ -48,15 +51,19 @@
 		{% else %}
 		<div class="row featurette">
 			{% for result in homeresults %}
-			<div class="col-md-4 recipe_ex">
-				<img src="{{  result.photo_path  }}">
-				<a href="#"><h3>{{  result.recipename  }}</h3></a>
-				<p>{{  result.description  }}</p>
+			<div class="col-md-4 recipe_preview">
+				<a href="{{ url_for('recipe') }}/{{result._id}}">
+					<div class="recipe_img" style="background-image: url({{  result.photo_path  }});">
+						<h3>{{  result.recipename  }}</h3>
+						<p>{{  result.description  }}</p>
+					</div>
+				</a>
 			</div>
-            {% endfor %}
+
+			{% endfor %}
+
+
 		</div>
-		
+		{% endif %}
 	</div>
-	{% endif %}
-</div>
-{% endblock %}
+	{% endblock %}

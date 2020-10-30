@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+{% block search %}
+			<div class="search">
+                <form action="{{ url_for('search') }}" method="post">
+                {{ searchform.csrf_token }}
+                {{ searchform.search(type="text", class="searchTerm", placeholder="Search for recipes") }}
+				<input type="submit" value="submit" style="display: none">
+                </form>
+            </div>
+{% endblock %}
 {% block intro %}
 <header class="masthead" style="
         background-image: url('https://media.istockphoto.com/photos/culinary-background-with-spices-and-recipe-book-picture-id607299402?k=6&m=607299402&s=612x612&w=0&h=eLARAbW9C2YYRCm2FXxn1yyfTVoKuKyhOvhKv0EEZl8=');
@@ -21,8 +30,9 @@
 	<div class="col-lg-8 col-md-10 mx-auto">
 		<h2>Recently uploaded recipes</h2>
 		{% for x in recentrecipes %}
-		<div class="post-preview">
-			<a href="#">
+		<div class="post-preview row"> 
+        <div class="col-md-9"> 
+			<a href="{{ url_for('recipe') }}/{{x._id}}">
 				<h2 class="post-title">
 					{{ x.recipename }}
 				</h2>
@@ -34,7 +44,10 @@
 				Posted by {{ x.customername }}
 				on {{ x.date }}
 			</p>
-		</div>
+            </div>
+            <div class="col-md-3 indexpicture" style="background-image: url({{  x.photo_path  }});">
+            </div>
+        </div>
 		<hr />
 		{% endfor %}
 

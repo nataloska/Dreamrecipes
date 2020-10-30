@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+	<div class="col-md-3 contactForm">
+		<h4>Ingredients</h4>
+		<ul class="list-group ingredientbar">
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/chicken">Chicken</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/beef">Beef</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/pork">Pork</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/fish">Fish</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/potatoes">Potatoes</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/rice">Rice</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/pasta">Pasta</a>
+		</ul>
+	</div>
+	<div class="col-md-9">
+		<div class="row">
+			<div class="col-md-12">
+				<header class="masthead recipecover" style="background-image: url({{  currentrecipe.photo_path  }});">
+					<div class="cook">Cooktime: {{  currentrecipe.cooktime  }} | Preptime:
+						{{  currentrecipe.preptime  }}</div>
+					<div class="madeby">Made by: {{  currentrecipe.customername  }} on {{  currentrecipe.date  }}</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="title">
+					<h1>{{  currentrecipe.recipename  }}</h1>
+				</div>
+				<div class="recipe_ingredients">
+					<span class="recipe_devider"></span>
+					<div class="row">
+						<div class="col-md-3 rtype">
+							Ingredients:
+						</div>
+						<div class="col-md-9">
+							{{  currentrecipe.ingredients  }}
+						</div>
+					</div>
+				</div>
+				<div class="recipe_descriptions">
+					<span class="recipe_devider"></span>
+					<div class="row">
+						<div class="col-md-3 rtype">
+							Description: </div>
+						<div class="col-md-9">
+							{{  currentrecipe.description  }}
+						</div>
+					</div>
+				</div>
+				<div class="recipe_instructions">
+					<span class="recipe_devider"></span>
+					<div class="row">
+						<div class="col-md-3 rtype">
+							Instructions: </div>
+						<div class="col-md-9">
+							{{  currentrecipe.instructions  }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

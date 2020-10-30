@@ -1,14 +1,13 @@
 import pymongo
 import os
-import gridfs
 import logging
 import traceback
 import base64
-import cgi
 
 from pprint import pprint
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 from pymongo import TEXT
+from bson.objectid import ObjectId
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, PasswordField, TextAreaField
@@ -29,9 +28,8 @@ RECIPE_COLLECTION = "recipe"
 db = pymongo.MongoClient(MONGODB_URI)
 users = db[DBS_NAME][USER_COLLECTION]
 recipes = db[DBS_NAME][RECIPE_COLLECTION]
-recipesearch = recipes.create_index([('description',TEXT)],default_language="english")
-fs = gridfs.GridFS(db[DBS_NAME])
-
+recipesearch = recipes.create_index([('ingredients', TEXT), 
+                                    ('description', TEXT)])
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
@@ -59,27 +57,33 @@ class RecipeForm(FlaskForm):
 # Flask
 @app.route("/")
 def index():
+    searchform = SearchForm()
     recentrecipes = []
     recententries = recipes.find().sort('date' , pymongo.DESCENDING).limit(5)
     for entry in recententries:
         customername = users.find_one({'email' : entry['username']})['name']
-        entry['customername'] = customername
-        recentrecipes.append(entry)
+        entry['customername'] = customername    
         newdate = datetime.date(entry['date'])
         entry['date'] = newdate
-        break
-    return render_template("index.html", recentrecipes=recentrecipes)
+        recentrecipes.append(entry)
+        
+    return render_template("index.html", recentrecipes=recentrecipes, searchform=searchform)
 
 @app.route("/search", methods=["POST"])
 def search():
-    form = cgi.FieldStorage().getvalue('search')
-    print(form)
-    if form:
-        print('test result')
-        searchresult = recipesearch.find({"$text": {"$search": query}}).limit(10)
-        return render_template("search.html", form=form, searchresult=searchresult)
+    searchform = SearchForm(request.form)   
+    query = searchform.search.data
+    if searchform:
+        searchresult = recipes.find({"$text": {"$search" : query }})
+        return render_template("search.html", searchform=searchform, searchresult=searchresult)
     
-    return render_template("search.html", form=form, searchresult=None)
+    return render_template("search.html", searchform=searchform, searchresult=None)
+
+@app.route("/search/<string:category>")
+def recipeingredient(category):
+    searchform = SearchForm()
+    searchresult = recipes.find({"$text": {"$search" : category }})
+    return render_template("search.html", searchresult=searchresult, searchform=searchform)
 
 @app.route("/recipe")
 def recipe():
@@ -87,12 +91,21 @@ def recipe():
     homequery = recipes.find().sort('date' , pymongo.DESCENDING).limit(9)
     for result in homequery:       
         customername = users.find_one({'email' : result['username']})['name']
-        result['customername'] = customername
-        homeresults.append(result)
+        result['customername'] = customername       
         newdate = datetime.date(result['date'])
         result['date'] = newdate
-        break   
+        homeresults.append(result)  
     return render_template("recipe.html", homeresults=homeresults)
+
+@app.route("/recipe/<string:_id>")
+def recipeitem(_id):
+    currentrecipe = recipes.find_one({'_id': ObjectId(_id)})
+    customername = users.find_one({'email' : currentrecipe['username']})['name']
+    currentrecipe['customername'] = customername       
+    newdate = datetime.date(currentrecipe['date'])
+    currentrecipe['date'] = newdate
+    return render_template("recipeitem.html", currentrecipe=currentrecipe)
+
 
 @app.route("/newrecipe", methods=['POST', 'GET'])
 def newrecipe(): 
@@ -110,7 +123,7 @@ def newrecipe():
             recipes.insert_one({'username' : session['email'], 'recipename' : form.recipename.data,
                                 'ingredients' : form.ingredients.data, 'description' : form.description.data,
                                 'instructions' : form.instructions.data, 'cooktime' : form.cTime.data,
-                                'preptime' : form.pTime.data, 'date' : datetime.now(), 'photo_path' : 'static/recipe/' + filename})
+                                'preptime' : form.pTime.data, 'date' : datetime.now(), 'photo_path' : '/static/recipe/' + filename})
             return redirect(url_for('index'))
         return redirect(url_for('index'))
     return render_template("newrecipe.html", form=form)

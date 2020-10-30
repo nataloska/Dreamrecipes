@@ -1,33 +1,57 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% block search %}
+			<div class="search">
+                <form action="{{ url_for('search') }}" method="post">
+                {{ searchform.csrf_token }}
+                {{ searchform.search(type="text", class="searchTerm", placeholder="Search for recipes") }}
+				<input type="submit" value="submit" style="display: none">
+                </form>
+            </div>
+{% endblock %}
+{% block content %}
 <div class="row" id="searches">
-	<div class="col-md-3">
+	<div class="col-md-3 contactForm">
+		<h4>Ingredients</h4>
+		<ul class="list-group ingredientbar">
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/chicken">Chicken</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/beef">Beef</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+				<a href="{{ url_for('search') }}/pork">Pork</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/fish">Fish</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/potatoes">Potatoes</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/rice">Rice</a>
+			</li>
+			<li class="list-group-item list-group-item-action">
+            <a href="{{ url_for('search') }}/pasta">Pasta</a>
+		</ul>
 	</div>
 	<div class="col-md-9">
-		{% if searchresult == None %}
+	{% if searchresult == None %}
 		<h1> No search results </h1>
-		{% else %}
-		{% for result in searchresult %}
-		<div class="row featurette">
-			{% if searchresult.index % 2 != 0 %}
-			<div class="col-md-6">
-				<a href="#">
-					<h3>{{  result.recipename  }}</h3>
-				</a>
+	{% else %}
+    <div class="row featurette">
+        {% for result in searchresult %}
+            <div class="col-md-4 recipe_preview">
+            <a href="{{ url_for('recipe') }}/{{result._id}}">
+			<div class="recipe_img" style="background-image: url({{  result.photo_path  }});">
+				<h3>{{  result.recipename  }}</h3>
 				<p>{{  result.description  }}</p>
-				<img src="{{  result.photo_path  }}">
 			</div>
-				{% else %}
-				<div class="col-md-6">
-					<a href="#">
-						<h3>{{  result.recipename  }}</h3>
-					</a>
-					<p>{{  result.description  }}</p>
-					<img src="{{  result.photo_path  }}">
-			</div>
-					{% endif %}
-				</div>
-				{% endfor %}
-				{% endif %}
-			</div>
-		</div>
-		{% endblock %}
+            </a>
+            </div>
+        {% endfor %}
+    </div>
+	{% endif %}
+	</div>
+</div>
+{% endblock %}

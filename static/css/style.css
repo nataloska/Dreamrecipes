@@ -145,10 +145,55 @@ header.masthead_1 .site-heading .subheading {
     margin: 10px 0 0;
     font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
-.recipe_ex{
-    width: 20vw;
-    position: absolute;
+.ingredientbar li a:hover{
+    text-decoration: none;
 }
-.recipe_ex img{
+.indexpicture{
+    padding: 10px;
+    background-size: contain; 
+    background-repeat: no-repeat;
+    float: right;
+    height: 200px;
+    width: 100%
+}
+.recipe_preview{
+    padding: 10px;
+    min-width: 150px;
+}
+.recipe_img{
+    background-size: 100%; 
+    background-repeat: no-repeat;
+    height: 100%;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+    text-align: center;
+}
+.recipecover{
     width: 100%;
+    min-height: 250px;
+}
+.cook{
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+.madeby{
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+.title{
+    background-color: #eff0f1;
+    font-size: 30px;
+    text-align: center;
+    color: #666;
+    padding: 20px 0;
+    border-bottom: 1px solid #cccccc;
+}
+.rtype{
+    text-align: center;
 }
