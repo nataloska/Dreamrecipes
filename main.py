@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict, MultiDict, FileStorage
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(32)
+app.config['SECRET_KEY'] = "123412341234123412341234123412341234"
 
 MONGODB_URI = os.getenv("MONGO_URI")
 DBS_NAME = "dreamrecipes"
@@ -269,9 +269,7 @@ def logout():
     return redirect(url_for('index')) 
 
 if __name__ == "__main__":
-    # app.secret_key = '12346894741389410'
     app.config['MAX_CONTENT_LENGTH'] = 2* 1024 * 1024 
-    app.config['SECRET_KEY'] = os.urandom(32)
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
             debug=True)
