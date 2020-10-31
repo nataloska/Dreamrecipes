@@ -1,3 +1,6 @@
+body{
+    font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
 .search {
     width: 80%;
     float: left;
@@ -196,4 +199,20 @@ header.masthead_1 .site-heading .subheading {
 }
 .rtype{
     text-align: center;
+}
+.recipe_devider{
+    border-top: 3px solid #bbb;
+    margin-top: 5px;
+}
+.recipe_ingredients{
+    background-color: #eff0f1;
+    padding: 10px;
+}
+.recipe_description{
+    background-color: #eff0f1;
+    padding: 10px;
+}
+.recipe_instructions{
+    background-color: #eff0f1;
+    padding: 10px;
 }

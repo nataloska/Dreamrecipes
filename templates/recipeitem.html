@@ -24,6 +24,7 @@
 			</li>
 			<li class="list-group-item list-group-item-action">
 				<a href="{{ url_for('search') }}/pasta">Pasta</a>
+            </li>
 		</ul>
 	</div>
 	<div class="col-md-9">
@@ -41,7 +42,7 @@
 					<h1>{{  currentrecipe.recipename  }}</h1>
 				</div>
 				<div class="recipe_ingredients">
-					<span class="recipe_devider"></span>
+					<hr class="recipe_devider">
 					<div class="row">
 						<div class="col-md-3 rtype">
 							Ingredients:
@@ -51,8 +52,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="recipe_descriptions">
-					<span class="recipe_devider"></span>
+				<div class="recipe_description">
+					<hr class="recipe_devider">
 					<div class="row">
 						<div class="col-md-3 rtype">
 							Description: </div>
@@ -62,7 +63,7 @@
 					</div>
 				</div>
 				<div class="recipe_instructions">
-					<span class="recipe_devider"></span>
+					<hr class="recipe_devider">
 					<div class="row">
 						<div class="col-md-3 rtype">
 							Instructions: </div>

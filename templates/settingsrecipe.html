@@ -1,0 +1,22 @@
+{% extends 'base.html' %} 
+{% block content %}
+{% if myrecipes == None %}
+		<h1> No recipes </h1>
+{% else %}
+		<div class="row featurette">
+            <h1>Click to delete recipe!</h1>
+			{% for recipe in myrecipes %}
+			<div class="col-md-4 recipe_preview">
+				<a href="{{ url_for('settingsrecipe') }}/{{recipe._id}}">
+					<div class="recipe_img" style="background-image: url({{  recipe.photo_path  }});">
+						<h3>{{  recipe.recipename  }}</h3>
+					</div>
+				</a>
+			</div>
+
+			{% endfor %}
+
+
+		</div>
+		{% endif %}
+{% endblock %}

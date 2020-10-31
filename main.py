@@ -5,7 +5,7 @@ import traceback
 import base64
 
 from pprint import pprint
-from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+from flask import Flask, flash, render_template, request, redirect, url_for, session, send_from_directory
 from pymongo import TEXT
 from bson.objectid import ObjectId
 from flask_wtf import FlaskForm
@@ -33,6 +33,18 @@ recipesearch = recipes.create_index([('ingredients', TEXT),
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8)])
+
+class PasswordForm(FlaskForm):
+    oldpassword = PasswordField('oldpassword', validators=[InputRequired(), Length(min=8)])
+    newpassword = PasswordField('newpassword', validators=[InputRequired(), Length(min=8)])
+
+class NameForm(FlaskForm):
+    newname = StringField('newname', validators=[InputRequired(), Length(max=30)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8)])
+
+class PhoneForm(FlaskForm):
+    phone = StringField('phone')
     password = PasswordField('password', validators=[InputRequired(), Length(min=8)])
 
 class RegForm(FlaskForm):
@@ -132,6 +144,99 @@ def newrecipe():
 def settings():
     return render_template("settings.html")
 
+@app.route("/settingsemail", methods=['GET', 'POST'])
+def settingsemail():
+    form = LoginForm(request.form)
+    if form.validate():
+        currentuser = users.find_one({'email' : session['email']})
+        isemailknown = users.find_one({'email' : form.email.data})
+        if isemailknown == None:
+            if sha256_crypt.verify(form.password.data, currentuser['password']):
+                recipes.update_many({'username' : currentuser['email']}, 
+                                    {"$set" : {'username' : form.email.data}}, upsert=False)
+                users.update_one({'email' : session['email']}, 
+                                {'$set': {'email' : form.email.data}}, upsert=False)
+                session['email'] = None
+                session['logged_in'] = False
+                flash('email changed! Please log in again')
+                return redirect(url_for('login'))
+            flash('password incorrect')
+            return redirect(url_for('settingsemail'))
+        flash('email already known')
+        return redirect(url_for('settingsemail'))
+    return render_template("settingsemail.html", form=form)
+
+@app.route("/settingspassword", methods=['GET', 'POST'])
+def settingspassword():
+    form = PasswordForm(request.form)
+    if form.validate():
+        currentuser = users.find_one({'email' : session['email']})
+        if sha256_crypt.verify(form.oldpassword.data, currentuser['password']):
+            updatedpassword = sha256_crypt.encrypt(form.newpassword.data)
+            users.update_one({'password' : currentuser['password']}, 
+                            {'$set': {'password' : updatedpassword}}, upsert=False)
+            session['email'] = None
+            session['logged_in'] = False
+            flash('Password has been changed! Please log in again')
+            return redirect(url_for('login'))
+        flash('Password incorrect')
+        return redirect(url_for('settingspassword'))
+    return render_template("settingspassword.html", form=form)
+
+@app.route("/settingsname", methods=['GET', 'POST'])
+def settingsname():
+    form = NameForm(request.form)
+    if form.validate():
+        currentuser = users.find_one({'email' : session['email']})
+        if sha256_crypt.verify(form.password.data, currentuser['password']):
+            users.update_one({'email' : session['email']}, 
+                            {'$set': {'name' : form.newname.data}}, upsert=False)
+            flash('Name has been changed!')
+            return redirect(url_for('index'))  
+        flash('Password incorrect')
+        return redirect(url_for('settingsname'))               
+    return render_template("settingsname.html", form=form)
+
+@app.route("/settingsphone", methods=['GET', 'POST'])
+def settingsphone():
+    form = PhoneForm(request.form)
+    if form.validate():
+        currentuser = users.find_one({'email' : session['email']})
+        if sha256_crypt.verify(form.password.data, currentuser['password']):
+            users.update_one({'email' : session['email']}, 
+                            {'$set': {'phone' : form.phone.data}}, upsert=False)
+            flash('Phone number has been changed!')
+            return redirect(url_for('index'))  
+        flash('Password incorrect')
+        return redirect(url_for('settingsphone')) 
+    return render_template("settingsphone.html", form=form)
+
+@app.route("/deletephone", methods=['GET', 'POST'])
+def deletephone():
+    form = PhoneForm(request.form)
+    if form.validate():
+        currentuser = users.find_one({'email' : session['email']})
+        if sha256_crypt.verify(form.password.data, currentuser['password']):
+            users.update_one({'email' : session['email']}, 
+                            {'$unset': {'phone' : ''}}, upsert=False)
+            flash('Phone number has been deleted!')
+            return redirect(url_for('index')) 
+    return render_template("settingsphone.html", form=form)
+
+@app.route("/settingsrecipe")
+def settingsrecipe():
+    currentuser = users.find_one({'email' : session['email']})
+    myrecipes = recipes.find({'username' : currentuser['email']})   
+    return render_template("settingsrecipe.html", myrecipes=myrecipes)
+
+@app.route("/settingsrecipe/<string:_id>")
+def deleterecipe(_id):
+    recipes.delete_one({'_id': ObjectId(_id)})
+    currentuser = users.find_one({'email' : session['email']})
+    myrecipes = recipes.find({'username' : currentuser['email']})
+    flash('Recipe deleted!')
+    return render_template("settingsrecipe.html", myrecipes=myrecipes)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
@@ -142,7 +247,8 @@ def login():
                 session['email'] = form.email.data
                 session['logged_in'] = True
                 return redirect(url_for('index'))
-
+            flash('Wrong password!')
+        flash('There is no account under this email, please sign up!')
     return render_template('login.html', form=form)
   
 @app.route('/register', methods=['GET', 'POST'])
@@ -156,8 +262,8 @@ def register():
             session['logged_in'] = True
             session['email'] = form.email.data       
             return redirect(url_for('index'))
-        
-        return 'That username already exists!'
+        flash('email already known, please sign in')
+        return redirect(url_for('register'))
 
     return render_template('register.html', form=form)
     
