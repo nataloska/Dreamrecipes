@@ -268,8 +268,10 @@ def logout():
     return redirect(url_for('index')) 
 
 if __name__ == "__main__":
-    app.secret_key = '12346894741389410'
+    # app.secret_key = '12346894741389410'
     app.config['MAX_CONTENT_LENGTH'] = 2* 1024 * 1024 
+    app.config.update(dict(SECRET_KEY=os.urandom(32),
+                            WTF_CSRF_SECRET_KEY=os.urandom(32)))
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
             debug=True)
