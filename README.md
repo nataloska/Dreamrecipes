@@ -41,4 +41,4 @@ For testing I used Chrome developer tools to check if the layout stayed consiste
 
 ## Deployment
 
-This project is deployed on Heroku
+This project is deployed on Heroku (https://dreamrecipes.herokuapp.com/)
