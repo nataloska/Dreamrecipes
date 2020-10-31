@@ -19,6 +19,13 @@ echo 'alias run="python3 $GITPOD_REPO_ROOT/manage.py runserver 0.0.0.0:8000"' >>
 echo "Checking for pip upgrade"
 pip3 install --upgrade pip
 echo "Done"
+pip3 install flask
+pip3 install dnspython
+pip3 install pymongo
+pip3 install flask_mongoengine
+pip3 install flask_wtf
+pip3 install email_validator
+pip3 install passlib
 source ~/.bashrc
 rm $GITPOD_REPO_ROOT/.gitpod*
 rm $GITPOD_REPO_ROOT/init_tasks.sh
