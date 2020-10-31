@@ -1,10 +1,7 @@
 import pymongo
 import os
-import logging
-import traceback
 import base64
 
-from pprint import pprint
 from flask import Flask, flash, render_template, request, redirect, url_for, session, send_from_directory
 from pymongo import TEXT
 from bson.objectid import ObjectId
@@ -118,7 +115,6 @@ def recipeitem(_id):
     currentrecipe['date'] = newdate
     return render_template("recipeitem.html", currentrecipe=currentrecipe)
 
-
 @app.route("/newrecipe", methods=['POST', 'GET'])
 def newrecipe(): 
     form = RecipeForm(CombinedMultiDict([request.files, request.form]))  
@@ -128,7 +124,6 @@ def newrecipe():
         )
         p = form.photo.data
         filename = secure_filename(p.filename)
-        print(filename)
         p.save(os.path.join(files_dir, 'recipe', filename))
         currentuser = users.find_one({'email' : session['email']})
         if currentuser:
